@@ -2,7 +2,7 @@
 
 Selamat datang di repositori proyek studi kasus komprehensif mengenai **Model Ising 2 Dimensi (2D) dan Transisi Fasa**. Repositori ini berisi implementasi mandiri algoritma Monte Carlo Metropolis untuk mensimulasikan sistem kisi magnetik dua dimensi dan mengamati bagaimana perilaku kolektif partikel memicu terjadinya magnetisasi spontan serta transisi fasa makroskopis.
 
-> 🌐 **Tautan Web Laporan (GitHub Pages):** [KLIK DI SINI UNTUK MELIHAT DASHBOARD SIMULASI](???)
+> 🌐 **Tautan Web Laporan (GitHub Pages):** [KLIK DI SINI UNTUK MELIHAT DASHBOARD SIMULASI](https://github.com/SPXZal/01241014-simulasi-model-ising-2d)
 
 ---
 
