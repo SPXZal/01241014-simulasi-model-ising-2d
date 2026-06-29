@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Simulasi Model Ising 2D - M. Afrizal (Kelompok SPX)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --cold: #0ea5e9;
+            --critical: #f59e0b;
+            --hot: #ef4444;
+            --accent: #8b5cf6;
+            --highlight-gold: #f59e0b;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.2) 0, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        header {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .team-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: #cbd5e1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .intro-box, .methodology-box {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            padding: 35px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .intro-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 5px; height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+        }
+
+        .methodology-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 5px; height: 100%;
+            background: linear-gradient(to bottom, var(--highlight-gold), var(--hot));
+        }
+
+        .intro-box h2, .methodology-box h2 {
+            margin-top: 0;
+            color: #e2e8f0;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .intro-box p {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .team-section {
+            background: rgba(15, 23, 42, 0.4);
+            padding: 20px 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .team-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .member-card {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #94a3b8;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .member-card.owner-highlight {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+        }
+
+        .member-card.owner-highlight strong {
+            color: #60a5fa;
+            font-size: 15px;
+        }
+
+        .owner-tag {
+            background: var(--highlight-gold);
+            color: #0f172a;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .section-title p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .card-header {
+            padding: 25px 20px;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .card-cold .card-header { background: linear-gradient(135deg, #0284c7, #0369a1); }
+        .card-critical .card-header { background: linear-gradient(135deg, #d97706, #b45309); }
+        .card-hot .card-header { background: linear-gradient(135deg, #dc2626, #991b1b); }
+
+        .temp-badge {
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-body {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-body p {
+            margin: 0 0 25px 0;
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 14px;
+            background-color: rgba(255,255,255,0.05);
+            color: #f1f5f9;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px;
+        }
+
+        .card-cold .btn:hover { background-color: var(--cold); border-color: var(--cold); }
+        .card-critical .btn:hover { background-color: var(--critical); border-color: var(--critical); }
+        .card-hot .btn:hover { background-color: var(--hot); border-color: var(--hot); }
+
+        /* Styles for Methodology Box */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .info-grid { grid-template-columns: 1fr; }
+        }
+
+        .info-section {
+            background: rgba(15, 23, 42, 0.4);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .info-section h4 {
+            margin-top: 0;
+            color: #60a5fa;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-list {
+            margin: 0;
+            padding-left: 20px;
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .info-list li { margin-bottom: 12px; }
+        
+        .math-text {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #e2e8f0;
+        }
+
+        footer {
+            background: rgba(15, 23, 42, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #64748b;
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            margin-top: auto;
+        }
+        
+        footer span { color: #94a3b8; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fa-solid fa-atom"></i> SIMULASI MODEL ISING 2D</h1>
+        <div class="team-badge">KELOMPOK SPX</div>
+    </header>
+
+    <div class="container">
+        <div class="intro-box">
+            <h2>Laporan Praktikum Fisika Komputasi</h2>
+            <p>Implementasi mandiri Algoritma Metropolis untuk menganalisis Sifat Termodinamika Kisi Spin Makroskopis. Halaman ini merupakan repositori hasil kompilasi program mandiri individual untuk evaluasi praktikum.</p>
+            
+            <div class="team-section">
+                <div class="team-title"><i class="fa-solid fa-users-gear"></i> Anggota Kelompok SPX:</div>
+                <div class="members-grid">
+                    <div class="member-card">
+                        <span>1. Juan Prayoga <span style="font-size:12px; color:var(--text-muted)">• 01241007</span></span>
+                    </div>
+                    <div class="member-card owner-highlight">
+                        <span>2. <strong>M. Afrizal Ma'arif</strong> <span style="font-size:12px; color:rgba(255,255,255,0.7)">• 01241014</span></span>
+                        <span class="owner-tag"><i class="fa-solid fa-code"></i> Kompilator</span>
+                    </div>
+                    <div class="member-card">
+                        <span>3. M. Zahid Tegar A. <span style="font-size:12px; color:var(--text-muted)">• 01241017</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <h3>Navigasi Studi Kasus</h3>
+            <p>Pilih fasa termodinamika di bawah ini untuk membuka dokumen laporan lengkap.</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card card-cold">
+                <div class="card-header">
+                    <span>Fase Feromagnetik</span>
+                    <span class="temp-badge">T = 1.0</span>
+                </div>
+                <div class="card-body">
+                    <p>Simulasi sistem di bawah suhu kritis (T &lt; T_c). Mengamati orientasi spin searah secara spontan membentuk domain magnetik seragam.</p>
+                    <a href="Kasus_1_Suhu_Rendah.html" class="btn">
+                        <span>Buka Laporan (.HTML)</span> <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card card-critical">
+                <div class="card-header">
+                    <span>Transisi & Kritikalitas</span>
+                    <span class="temp-badge">T = 2.27</span>
+                </div>
+                <div class="card-body">
+                    <p>Simulasi tepat pada titik suhu kritis teoritis Onsager (T ≈ T_c). Analisis fenomena fluktuasi kritis dan runtuhnya keteraturan jarak jauh.</p>
+                    <a href="Kasus_2_Suhu_Sedang.html" class="btn">
+                        <span>Buka Laporan (.HTML)</span> <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card card-hot">
+                <div class="card-header">
+                    <span>Fase Paramagnetik</span>
+                    <span class="temp-badge">T = 4.0</span>
+                </div>
+                <div class="card-body">
+                    <p>Simulasi rentang suhu tinggi (T &gt; T_c). Meneliti dominasi energi termal atas interaksi pertukaran spin dengan magnetisasi rata-rata M ≈ 0.</p>
+                    <a href="Kasus_3_Suhu_Tinggi.html" class="btn">
+                        <span>Buka Laporan (.HTML)</span> <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="methodology-box">
+            <h2><i class="fa-solid fa-microscope"></i> Metodologi & Atribusi Proyek</h2>
+            
+            <div class="info-grid">
+                <div class="info-section">
+                    <h4><i class="fa-solid fa-check-double"></i> Pencapaian Kriteria Evaluasi</h4>
+                    <ul class="info-list">
+                        <li><strong>Akurasi Matematis & Fisis Teruji:</strong> Formulasi <span class="math-text">ΔE = 2s_{i,j} ∑ s_tetangga</span> berhasil diimplementasikan. Kondisi batas periodik <i>(periodic boundary)</i> dijaga keamanannya menggunakan operasi <code>modulo</code> pada indeks array matriks kisi. Fungsi probabilitas penerimaan Metropolis <span class="math-text">R = e^{-ΔE/T}</span> terbukti akurat memicu perpecahan simetri spontan pada suhu rendah.</li>
+                        <li><strong>Efisiensi Komputasi Optimal:</strong> Algoritma terbebas dari perhitungan ulang energi total sistem (Hamiltonian) pada setiap step iterasi. Komputasi murni difokuskan pada kalkulasi perbedaan selisih energi lokal. Struktur kodingan ditulis rapi dengan dokumentasi komentar informatif untuk memudahkan <i>code review</i>.</li>
+                        <li><strong>Komunikasi Ilmiah Berkualitas:</strong> Seluruh grafik visualisasi (peta domain magnetik & kurva magnetisasi termal) memenuhi standar penyajian data dengan menyertakan atribut absis, ordinat, judul, dan <i>colorbar</i>. Laporan ini juga menyajikan analisis mendalam terkait interaksi energi pertukaran vs. agitasi termal di tiap kasus fasa.</li>
+                    </ul>
+                </div>
+
+                <div class="info-section" style="display: flex; flex-direction: column; gap: 15px;">
+                    
+                    <div>
+                        <h4><i class="fa-solid fa-robot"></i> Penggunaan Bantuan AI</h4>
+                        <ul class="info-list" style="margin-bottom:0;">
+                            <li><strong>Gemini 1.5 Pro:</strong> Dimanfaatkan untuk mendesain arsitektur <i>Dashboard UI/UX</i> (HTML & CSS), menginjeksi <i>styling</i> premium pada luaran ekspor Jupyter Notebook, serta memperbaiki (<i>debugging</i>) struktur tag Markdown yang <i>error</i> atau tidak ter-<i>render</i> dengan baik pada dokumen statis HTML.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4><i class="fa-solid fa-laptop-code"></i> Penggunaan Aplikasi Lain</h4>
+                        <ul class="info-list" style="margin-bottom:0;">
+                            <li><strong>Jupyter Software / Lab:</strong> Digunakan untuk menyediakan lingkungan penulisan program interaktif, penggabungan teks analisis formal, serta rendering visualisasi Python (matplotlib) secara terintegrasi <i>(inline)</i>.</li>
+                            <li><strong>Visual Studio Code:</strong> Editor tambahan untuk modifikasi struktural <i>source code</i> statis HTML/CSS saat proses *deployment* antarmuka indeks.</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4><i class="fa-solid fa-book-bookmark"></i> Referensi & Sumber Data</h4>
+                        <ul class="info-list">
+                            <li>Landau, D. P., dkk. <i>A Guide to Monte Carlo Simulations in Statistical Physics</i> (Bab 17.2: Aturan Implementasi).</li>
+                            <li>Rifani, Agus. <i>Modul Pembelajaran: Simulasi Model Magnet dan Transisi Fasa</i>.</li>
+                        </ul>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        &copy; 2026 <span>Kelompok SPX (Versi Kompilasi: M. Afrizal Ma'arif)</span> - Praktikum Fisika Komputasi.
+    </footer>
+
+</body>
+</html>
